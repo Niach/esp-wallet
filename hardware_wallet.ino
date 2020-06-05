@@ -3,13 +3,14 @@
 #include "buttons.h"
 #include "confirmation_screen.h"
 #include "list_screen.h"
+#include "splash_screen.h"
 
 
 U8G2_SSD1306_128X64_NONAME_F_SW_I2C u8g2(U8G2_R0, /* clock=*/ 22, /* data=*/ 21, /* reset=*/ 16);
 Buttons buttons;
 Screen *currentScreen;
 
-std::vector<String> items = { "Hallo", "Welt", "Yolo" };
+std::vector<String> items = { "pair", "seed", "settings" };
 
 void setup() {
   Serial.begin(115200);
@@ -21,8 +22,7 @@ void setup() {
 
   init(true);
 
-  currentScreen = new ConfirmationScreen(&u8g2, &buttons, "accept?", onFinish);
-
+  currentScreen = new SplashScreen(&u8g2, &buttons, 28, showList);
 
   //printSeed(u8x8);
   delay(2000);
@@ -37,8 +37,8 @@ void loop() {
 
 }
 
-void onFinish() {
-  Serial.println("finish");
+void showList() {
+  Serial.println("finish splash");
 
   currentScreen = new ListScreen(&u8g2, &buttons, &items, onListFinish);
 }
