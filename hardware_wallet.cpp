@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "Bitcoin.h"
+#include "PSBT.h"
 #include <EEPROM.h>
 #include "hardware_wallet.h"
 #include <Preferences.h>
@@ -10,9 +11,9 @@ String getValue(String data, char separator, int index);
 Preferences preferences;
 HDPrivateKey hd;
 
-String getAddress(int accountNumber, int addressNumber) {
+String getAddress(String accountNumber, String addressNumber) {
   HDPrivateKey account = hd.derive("m/84'/0'/0'/");
-  return account.derive("m/0/0/").address();
+  return account.derive("m/" + accountNumber + "/" + addressNumber + "/").address();
 }
 
 /*
@@ -38,6 +39,14 @@ void generateSeed() {
   preferences.putString("seed", generateMnemonic(256));  
   preferences.end(); 
 }
+
+String signPSBT(String psbt_data) {
+  PSBT tx;
+  tx.parse(psbt_data.c_str());
+  tx.sign(hd);
+  return tx;
+}
+
 /*
 void printSeed(U8G2_SSD1306_128X64_NONAME_F_SW_I2C u8g2) {
   u8x8.clear();

@@ -4,7 +4,6 @@
 
 void SplashScreen::update()  {
   this->currentFrame++;
-  Serial.println(this->currentFrame);
   if (this->currentFrame > this->duration) {
     Serial.println("Duration over");
     this->finish();  
